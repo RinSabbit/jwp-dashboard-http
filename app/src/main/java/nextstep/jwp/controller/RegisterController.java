@@ -11,6 +11,7 @@ import nextstep.jwp.http.request.HttpRequest;
 import nextstep.jwp.http.request.requestline.RequestPath;
 import nextstep.jwp.http.response.HttpResponse;
 import nextstep.jwp.http.response.HttpStatus;
+import nextstep.jwp.http.response.ResponseHeaders;
 import nextstep.jwp.http.util.ParamExtractor;
 import nextstep.jwp.model.User;
 
@@ -19,12 +20,14 @@ public class RegisterController extends AbstractController {
     private static final String REGISTER_RESOURCE_PATH = "/register.html";
 
     @Override
-    protected HttpResponse doGet(HttpRequest request) {
-        return HttpResponse.of(HttpStatus.OK, new RequestPath(REGISTER_RESOURCE_PATH));
+    protected void doGet(HttpRequest request,
+        HttpResponse response) {
+        response.of2(new RequestPath(REGISTER_RESOURCE_PATH));
     }
 
     @Override
-    protected HttpResponse doPost(HttpRequest request) {
+    protected void doPost(HttpRequest request,
+        HttpResponse response) {
         final Body body = request.getBody();
         final Map<String, String> params = ParamExtractor.extractParams(body.asString());
         String account = URLDecoder.decode(params.get("account"), Charset.defaultCharset());
@@ -34,6 +37,6 @@ public class RegisterController extends AbstractController {
         final User user = new User(account, password, email);
         InMemoryUserRepository.save(user);
 
-        return HttpResponse.redirect(INDEX_RESOURCE_PATH);
+        response.redirect2(INDEX_RESOURCE_PATH);
     }
 }

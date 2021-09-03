@@ -5,10 +5,15 @@ import nextstep.jwp.http.common.HttpVersion;
 public class StatusLine {
 
     private final HttpVersion httpVersion;
-    private final HttpStatus httpStatus;
+    private HttpStatus httpStatus;
 
     public StatusLine(HttpVersion httpVersion, HttpStatus httpStatus) {
         this.httpVersion = httpVersion;
+        this.httpStatus = httpStatus;
+    }
+
+
+    public void setHttpStatus(HttpStatus httpStatus) {
         this.httpStatus = httpStatus;
     }
 

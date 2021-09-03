@@ -13,7 +13,7 @@ public class Body {
 
     private static final Body EMPTY_BODY = new Body(null);
 
-    private final String value;
+    private String value;
 
     public Body(String value) {
         this.value = value;

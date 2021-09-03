@@ -9,8 +9,10 @@ import java.net.Socket;
 import java.util.Objects;
 import nextstep.jwp.controller.Controller;
 import nextstep.jwp.controller.RequestMapping;
+import nextstep.jwp.http.common.Body;
 import nextstep.jwp.http.request.HttpRequest;
 import nextstep.jwp.http.response.HttpResponse;
+import nextstep.jwp.http.response.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,13 +36,16 @@ public class RequestHandler implements Runnable {
 
         try (final InputStream inputStream = connection.getInputStream();
             final OutputStream outputStream = connection.getOutputStream()) {
+
             final BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(inputStream));
+            final HttpRequest request = HttpRequest.parse(bufferedReader);
 
-            HttpRequest httpRequest = HttpRequest.parse(bufferedReader);
-            HttpResponse httpResponse = service(httpRequest);
-
-            writeResponse(outputStream, httpResponse);
+            final HttpResponse response = HttpResponse.of(HttpStatus.OK, Body.empty());
+            Controller controller = requestMapping.findController(request);
+            System.out.println(controller.getClass().getName());
+            service(request, response);
+            writeResponse(outputStream, response);
         } catch (IOException exception) {
             log.error("Exception stream", exception);
         } finally {
@@ -48,13 +53,14 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private HttpResponse service(HttpRequest httpRequest) {
+    private void service(HttpRequest request, HttpResponse response) {
         try {
-            Controller controller = requestMapping.findController(httpRequest);
-            return controller.process(httpRequest);
+            System.out.println("START SERVICE!!");
+
+//            controller.process(request, response);
         } catch (RuntimeException exception) {
             log.error("Internal server error", exception);
-            return HttpResponse.redirect(INTERNAL_SERVER_ERROR_PATH);
+            response.redirect2(INTERNAL_SERVER_ERROR_PATH);
         }
     }
 

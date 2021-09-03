@@ -9,9 +9,10 @@ import nextstep.jwp.http.session.HttpCookie;
 public class HttpResponse {
 
     private static final String RESOURCE_ROUTE_DELIMITER = "/";
+
     private final StatusLine statusLine;
     private final ResponseHeaders responseHeaders;
-    private final Body body;
+    private Body body;
 
     public HttpResponse(StatusLine statusLine,
         ResponseHeaders responseHeaders, Body body) {
@@ -31,12 +32,16 @@ public class HttpResponse {
         return new HttpResponse(statusLine, headers, body);
     }
 
-    public static HttpResponse of(HttpStatus httpStatus, RequestPath uri) {
+    public void of2(RequestPath uri) {
         final ResponseHeaders headers = new ResponseHeaders();
         String path = setPrefix(uri.getPath());
-        Body body = Body.parse(path);
-        putContentTypeAndLength(body, headers, ContentType.of(uri));
-        return of(httpStatus, headers, body);
+        setBody(Body.parse(path));
+        putContentTypeAndLength2(body, headers, ContentType.of(uri));
+    }
+
+    private void putContentTypeAndLength2(Body body, ResponseHeaders headers, String value) {
+        headers.putHeader("Content-Type", value);
+        headers.putHeader("Content-Length", String.valueOf(body.length()));
     }
 
     private static void putContentTypeAndLength(Body body, ResponseHeaders headers, String value) {
@@ -55,6 +60,19 @@ public class HttpResponse {
         final ResponseHeaders headers = new ResponseHeaders();
         headers.putHeader("Location", uri);
         return of(HttpStatus.FOUND, headers, Body.empty());
+    }
+
+    public void redirect2 (String uri) {
+        this.responseHeaders.putHeader("Location", uri);
+        setStatus(HttpStatus.FOUND);
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.statusLine.setHttpStatus(status);
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
 
     public void setCookie(HttpCookie cookie) {

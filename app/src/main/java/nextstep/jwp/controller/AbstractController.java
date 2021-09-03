@@ -6,18 +6,20 @@ import nextstep.jwp.http.response.HttpResponse;
 public abstract class AbstractController implements Controller {
 
     @Override
-    public HttpResponse process(HttpRequest request) {
+    public void process(HttpRequest request, HttpResponse response) {
         if (request.isGet()) {
-            return doGet(request);
+            doGet(request, response);
         }
-        return doPost(request);
+        doPost(request, response);
     }
 
-    protected HttpResponse doGet(HttpRequest request) {
+    protected void doGet(HttpRequest request,
+        HttpResponse response) {
         throw new UnsupportedOperationException();
     }
 
-    protected HttpResponse doPost(HttpRequest request) {
+    protected void doPost(HttpRequest request,
+        HttpResponse response) {
         throw new UnsupportedOperationException();
     }
 }

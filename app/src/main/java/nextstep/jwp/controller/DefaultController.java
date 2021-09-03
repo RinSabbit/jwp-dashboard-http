@@ -1,5 +1,6 @@
 package nextstep.jwp.controller;
 
+import java.util.concurrent.locks.ReentrantLock;
 import nextstep.jwp.http.request.HttpRequest;
 import nextstep.jwp.http.request.requestline.RequestPath;
 import nextstep.jwp.http.response.HttpResponse;
@@ -10,7 +11,8 @@ public class DefaultController extends AbstractController {
     public static final String INDEX_RESOURCE_PATH = "/index.html";
 
     @Override
-    protected HttpResponse doGet(HttpRequest request) {
-        return HttpResponse.of(HttpStatus.OK, new RequestPath(INDEX_RESOURCE_PATH));
+    protected void doGet(HttpRequest request,
+        HttpResponse response) {
+        response.of2(new RequestPath(INDEX_RESOURCE_PATH));
     }
 }

@@ -8,8 +8,8 @@ import nextstep.jwp.http.response.HttpStatus;
 public class StaticResourceController implements Controller {
 
     @Override
-    public HttpResponse process(HttpRequest request) {
+    public void process(HttpRequest request, HttpResponse response) {
         final RequestLine requestLine = request.getRequestLine();
-        return HttpResponse.of(HttpStatus.OK, requestLine.getRequestURI());
+        response.of2(requestLine.getRequestURI());
     }
 }

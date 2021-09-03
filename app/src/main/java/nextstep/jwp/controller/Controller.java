@@ -4,7 +4,5 @@ import nextstep.jwp.http.request.HttpRequest;
 import nextstep.jwp.http.response.HttpResponse;
 
 public interface Controller {
-
-    HttpResponse process(HttpRequest request);
-
+    void process(HttpRequest request, HttpResponse response);
 }
